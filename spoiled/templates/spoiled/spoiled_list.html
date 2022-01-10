@@ -1,0 +1,48 @@
+{% extends "base_menu.html" %}
+{% load humanize %}
+{% block content %}
+<h5>Создать брак</h5>
+<p>
+  <form action="{% url 'spoiled:create_spoiled' shop %}" method="get">
+    <input name="barcode" type="text" placeholder="Введите штрихкод" >
+    <input type="submit" value="Submit">
+    <input type="submit" value="Cancel" onclick="window.location.href='{% url 'spoiled:all' shop %}';return false;">
+  </form>
+</p>
+<a href="?create_file_spoiled=1">Загрузить файл</a>
+<table class="table table-hover">
+  <caption> <h1>Браки {{spoiled_list.shop}}</h1>  </caption>
+
+   <tr>
+       <th>Номенклатура</th>
+       <th>Количество</th>
+       <th>Комментарий</th>
+       <th>Место происшествия</th>
+       <th>Вид</th>
+       <th>Дата</th>
+       <th>edit</th>
+   </tr>
+      {% if spoiled_list %}
+      {% for spoiled in spoiled_list %}
+    <tr>
+        <td><a href="{% url 'spoiled:spoiled_detail'  spoiled.id %}">{{spoiled.nomenclature}}</a></td>
+        <td>{{spoiled.quantity}}</td>
+        <td>{{spoiled.comment}}</td>
+        <td>{{spoiled.place.name}}</td>
+        <td>{{spoiled.sub.name}}</td>
+        <td>{{ spoiled.updated_at|naturalday }}</td>
+        <td>
+            {% if spoiled.owner == user %}
+            <a href="{% url 'spoiled:spoiled_delete' spoiled.id %}"><i class="fa fa-trash"></i></a>
+            <a href="{% url 'spoiled:spoiled_update' spoiled.id %}"><i class="fa fa-pencil"></i></a>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    {% else %}
+    {% endif %}
+</table>
+
+
+{% endblock %}
+
