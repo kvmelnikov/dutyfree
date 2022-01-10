@@ -73,7 +73,7 @@ class Spoiled(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
 
-    quantity = models.IntegerField(default=0)
+    quantity = models.PositiveSmallIntegerField(default=0)
     picture = models.BinaryField(null=True, blank=True, editable=True)
     content_type = models.CharField(max_length=256, null=True, blank=True, help_text="The MIMEType of th file")
     name_photo = models.CharField(max_length=256, null=True, blank=True, help_text="Name foto")
