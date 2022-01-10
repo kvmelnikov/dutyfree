@@ -1,4 +1,4 @@
-from spoiled.models import Spoiled, Nomenclature, Barcode
+from spoiled.models import Spoiled, Nomenclature
 from django import forms
 from spoiled.humanize import  naturalsize
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -13,11 +13,9 @@ class SpoiledForm(forms.ModelForm):
 
     class Meta:
         model = Spoiled
-        fields = ['nomenclature', 'comment', 'shop', 'quantity', 'place', 'sub', 'picture']
+        fields = ['nomenclature', 'comment', 'shop', 'quantity', 'sub_description', 'picture', 'future_spoiled']
         labels = {'nomenclature': 'Номеклатура', 'comment': 'Комментарий',
                   'shop': 'Магазин', 'quantity': 'Количество',
-                  'place': 'Место',
-                  'sub': 'Вид',
                   }
 
     def __init__(self, *args, **kwargs):

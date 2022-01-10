@@ -4,29 +4,15 @@ from django.conf import settings
 # Create your models here.
 
 class Shop(models.Model):
-    name = models.CharField(
-        max_length=200,
-        help_text="Name shop",
-        validators=[MinLengthValidator(2, "Shop must be greater than 1 character")]
-    )
+    name = models.CharField(max_length=15, help_text="Name shop")
     def __str__(self):
         return self.name
 
 class Group(models.Model):
-    name = models.CharField(
-        max_length=200,
-        help_text="Name group",
-        validators=[MinLengthValidator(2, "Shop must be greater than 1 character")]
-    )
-
-class Barcode(models.Model):
-    name = models.CharField(
-        max_length=20,
-        help_text="Barcode"
-    )
+    name = models.CharField(max_length=200, help_text="Name group")
 
     def __str__(self):
-        self.name
+        return self.name
 
 class Nomenclature(models.Model):
     name = models.CharField(
@@ -34,19 +20,12 @@ class Nomenclature(models.Model):
         help_text="Name shop",
         validators=[MinLengthValidator(2, "Shop must be greater than 1 character")]
     )
-    plu = models.CharField(
-        max_length=20,
-        help_text="plu"
-    )
-    barcode = models.CharField(
-        max_length=20,
-        help_text="plu"
-    )
-
+    plu = models.CharField( max_length=20, help_text="plu")
+    barcode = models.CharField(max_length=20, help_text="plu")
     inv_price = models.FloatField(default=0)
     sale_price = models.FloatField(default=0)
-    characteristic = models.CharField( max_length=200, help_text="characteristic", default="No")
-    unit = models.CharField(max_length=10, help_text="unit", default="No")
+    characteristic = models.CharField(max_length=200, default="")
+    unit = models.CharField(max_length=10, help_text="unit", default="")
     group = models.ForeignKey('Group', on_delete=models.CASCADE, null=False)
     shop = models.ForeignKey('Shop', on_delete=models.CASCADE, null=False)
 
@@ -54,35 +33,37 @@ class Nomenclature(models.Model):
         return self.name
 
 class Employee(models.Model):
-    name = models.CharField(
-        max_length=200,
-        help_text="Name employee",
-        validators=[MinLengthValidator(2, "Employee must be greater than 1 character")]
-    )
+    name = models.CharField(max_length=200, help_text="Name employee")
     shop = models.ForeignKey('Shop', on_delete=models.CASCADE, null=False)
 
-class Place(models.Model):
-    name = models.CharField(
-        max_length=200,
-        help_text="Place spoiled",
-        validators=[MinLengthValidator(2, "Place must be greater than 1 character")]
-    )
-
-    def __str__(self):
-        return self.name
-
-class Sub(models.Model):
-    name = models.CharField(
-        max_length=200,
-        help_text="Sub spoiled",
-        validators=[MinLengthValidator(2, "Sub must be greater than 1 character")]
-    )
-
-    def __str__(self):
-        return self.name
-
-
 class Spoiled(models.Model):
+    """
+    1. Пропажа товара на складе / при разгрузке автомобиля.
+    2. Пропажа, бой, брак, истекший срок годности товара в торговом зале.
+    3. Бой товара в торговом зале или на складе сотрудником магазина.
+
+    Нельзя Продать
+    Можно продать
+    Сотрудники
+    """
+    WAREHOUSE = 'WH'
+    TRAIDING_FLOOR = "TF"
+    STAFF = 'ST'
+    SUB_DESCRIPTION = [
+        (WAREHOUSE, '1. Пропажа товара на складе / при разгрузке автомобиля.'),
+        (TRAIDING_FLOOR, '2. Пропажа, бой, брак, истекший срок годности товара в торговом зале.'),
+        (STAFF, '3. Бой товара в торговом зале или на складе сотрудником магазина.')
+    ]
+
+    NOT_SALE = 'NS'
+    SALE_DISCOUNT = 'SD'
+    EMPLOYEES_WILL_BUY = 'EB'
+    FUTURE_SPOILED = [
+        (NOT_SALE, 'Нельзя Продать'),
+        (SALE_DISCOUNT, 'Можно продать'),
+        (EMPLOYEES_WILL_BUY, 'Сотрудники')
+    ]
+
     comment = models.CharField(
         max_length=200,
         help_text="Что случилось",
@@ -97,10 +78,12 @@ class Spoiled(models.Model):
     content_type = models.CharField(max_length=256, null=True, blank=True, help_text="The MIMEType of th file")
     name_photo = models.CharField(max_length=256, null=True, blank=True, help_text="Name foto")
     write_off = models.IntegerField(default=0)
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=0, db_constraint=False)
-    sub = models.ForeignKey('Sub', on_delete=models.CASCADE, null=True, db_constraint=True)
-    place = models.ForeignKey('Place', on_delete=models.CASCADE, null=True, db_constraint=True)
+    future_spoiled = models.CharField( max_length=2, choices=FUTURE_SPOILED, default=NOT_SALE, verbose_name="Что делать с браком")
+    sub_description = models.CharField(max_length=2, choices=SUB_DESCRIPTION, default=WAREHOUSE, verbose_name="Вид обстоятельств")
     employee = models.ForeignKey('Employee', on_delete=models.CASCADE, null=True, db_constraint=False)
     nomenclature = models.ForeignKey('Nomenclature', on_delete=models.CASCADE, null=False, db_constraint=False)
     shop = models.ForeignKey('Shop', on_delete=models.CASCADE, null=False, db_constraint=True)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=0, db_constraint=False)
+    # def get_sub_descriptio_from_display(self):
+    #     return SUB_DESCRIPTION[self.sub_description]
 
