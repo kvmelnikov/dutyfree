@@ -86,4 +86,5 @@ class Spoiled(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=0, db_constraint=False)
     # def get_sub_descriptio_from_display(self):
     #     return SUB_DESCRIPTION[self.sub_description]
+            
 

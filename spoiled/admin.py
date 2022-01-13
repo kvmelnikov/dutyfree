@@ -1,7 +1,7 @@
 from django.contrib import admin
-#from spoiled.models import Spoiled
+from spoiled.models import Spoiled
 
 
 # Register your models here.
 
-# admin.site.register(Spoiled)
+admin.site.register(Spoiled)
