@@ -13,10 +13,7 @@ class SpoiledForm(forms.ModelForm):
 
     class Meta:
         model = Spoiled
-        fields = ['nomenclature', 'comment', 'shop', 'quantity', 'sub_description', 'picture', 'future_spoiled']
-        labels = {'nomenclature': 'Номеклатура', 'comment': 'Комментарий',
-                  'shop': 'Магазин', 'quantity': 'Количество',
-                  }
+        fields = ['nomenclature', 'description_comment', 'shop', 'quantity', 'sub_description', 'picture', 'future_spoiled', 'discount_percent']
 
     def __init__(self, *args, **kwargs):
         super(SpoiledForm, self).__init__(*args, **kwargs)

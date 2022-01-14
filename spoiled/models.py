@@ -1,7 +1,19 @@
 from django.db import models
-from django.core.validators import MinLengthValidator
+from django.core.validators import MinLengthValidator, MaxValueValidator
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
+
 # Create your models here.
+
+class Comment(models.Model):
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    content = models.TextField()
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField(null=True)
+    content_object = GenericForeignKey("content_type", "object_id")
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    modified_at = models.DateTimeField(auto_now=True, null=True)
 
 class Shop(models.Model):
     name = models.CharField(max_length=15, help_text="Name shop")
@@ -36,6 +48,8 @@ class Employee(models.Model):
     name = models.CharField(max_length=200, help_text="Name employee")
     shop = models.ForeignKey('Shop', on_delete=models.CASCADE, null=False)
 
+
+
 class Spoiled(models.Model):
     """
     1. Пропажа товара на складе / при разгрузке автомобиля.
@@ -64,15 +78,10 @@ class Spoiled(models.Model):
         (EMPLOYEES_WILL_BUY, 'Сотрудники')
     ]
 
-    comment = models.CharField(
-        max_length=200,
-        help_text="Что случилось",
-        validators=[MinLengthValidator(2, "Employee must be greater than 1 character")]
-    )
-
+    discount_percent = models.IntegerField(null=True)
+    description_comment = models.TextField(max_length=200, default="", null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
-
     quantity = models.PositiveSmallIntegerField(default=0)
     picture = models.BinaryField(null=True, blank=True, editable=True)
     content_type = models.CharField(max_length=256, null=True, blank=True, help_text="The MIMEType of th file")
@@ -84,7 +93,8 @@ class Spoiled(models.Model):
     nomenclature = models.ForeignKey('Nomenclature', on_delete=models.CASCADE, null=False, db_constraint=False)
     shop = models.ForeignKey('Shop', on_delete=models.CASCADE, null=False, db_constraint=True)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=0, db_constraint=False)
-    # def get_sub_descriptio_from_display(self):
-    #     return SUB_DESCRIPTION[self.sub_description]
+    comments = GenericRelation(Comment, default="")
+
+
             
 

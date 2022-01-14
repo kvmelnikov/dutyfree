@@ -33,7 +33,6 @@ class SpoiledCreateView(LoginRequiredMixin, View):
     template_name = "spoiled/spoiled_form.html"
 
     def get(self, request, pk_shop):
-        print("dfdfdf df df ")
         try:
             barcode = request.GET['barcode']
             nomen = Nomenclature.objects.filter(Q(barcode=barcode) & Q(shop=pk_shop))
