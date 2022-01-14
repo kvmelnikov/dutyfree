@@ -10,6 +10,7 @@ from django.views import View
 from django.urls import reverse_lazy
 from django.http import HttpResponse, HttpResponseBadRequest
 
+
 class SpoiledListView(OwnerListView):
     model = Spoiled
     template_name = 'spoiled/spoiled_list.html'
@@ -19,6 +20,7 @@ class SpoiledListView(OwnerListView):
         context = {}
         context['spoiled_list'] = spoileds
         context['shop'] = pk_shop
+
         create_file = self.request.GET.get('create_file_spoiled')
         if create_file:
             print(create_file)
@@ -29,7 +31,7 @@ class SpoiledDetailView(OwnerDetailView):
     model = Spoiled
     template_name = "spoiled/detail.html"
 
-class SpoiledCreateView(LoginRequiredMixin, View):
+class SpoiledCreateView(OwnerCreateView):
     template_name = "spoiled/spoiled_form.html"
 
     def get(self, request, pk_shop):
