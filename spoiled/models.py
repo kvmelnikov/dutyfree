@@ -8,12 +8,15 @@ from django.contrib.contenttypes.models import ContentType
 
 class Comment(models.Model):
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    content = models.TextField()
+    content = models.CharField(max_length=200)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField(null=True)
     content_object = GenericForeignKey("content_type", "object_id")
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     modified_at = models.DateTimeField(auto_now=True, null=True)
+
+    def __str__(self):
+        return self.content
 
 class Shop(models.Model):
     name = models.CharField(max_length=15, help_text="Name shop")
@@ -93,7 +96,7 @@ class Spoiled(models.Model):
     nomenclature = models.ForeignKey('Nomenclature', on_delete=models.CASCADE, null=False, db_constraint=False)
     shop = models.ForeignKey('Shop', on_delete=models.CASCADE, null=False, db_constraint=True)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=0, db_constraint=False)
-    comments = GenericRelation(Comment, default="")
+    comments = GenericRelation(Comment, default="", related_name="comments")
 
 
             

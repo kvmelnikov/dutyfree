@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from spoiled.models import Spoiled, Nomenclature
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
+from spoiled.models import Spoiled, Nomenclature, Comment
 from django.db.models import Q
 from spoiled.owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateView, OwnerDeleteView
 from django.views.generic import TemplateView
-from spoiled.forms import SpoiledForm
+from spoiled.forms import SpoiledForm, CommentForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
@@ -16,16 +16,24 @@ class SpoiledListView(OwnerListView):
     template_name = 'spoiled/spoiled_list.html'
 
     def get(self, request, pk_shop):
-        spoileds = self.model.objects.filter(shop=pk_shop)
+        spoileds = get_list_or_404(self.model, shop=pk_shop)
+        comment_form = CommentForm()
         context = {}
+        context['comment_form'] = comment_form
         context['spoiled_list'] = spoileds
         context['shop'] = pk_shop
-
-        create_file = self.request.GET.get('create_file_spoiled')
-        if create_file:
-            print(create_file)
         return render(request, self.template_name, context)
 
+    def post(self, request, pk_shop):
+        comment_form = CommentForm(request.POST)
+        spoiled_pk = request.POST['spoiled']
+        spoiled = get_object_or_404(self.model, pk=spoiled_pk)
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.content_object = spoiled
+            comment.creator = request.user
+            comment.save()
+            return redirect(request.path_info)
 
 class SpoiledDetailView(OwnerDetailView):
     model = Spoiled
@@ -99,8 +107,6 @@ class SpoiledDeleteView(OwnerDeleteView):
         pk_shop = spoiled.shop.id
         spoiled.delete()
         return redirect(reverse_lazy("spoiled:all", kwargs={'pk_shop': pk_shop}))
-
-
 
 
 def stream_file(request, pk):

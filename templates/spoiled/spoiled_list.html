@@ -22,7 +22,10 @@
        <th>Последствия</th>
        <th>Вид</th>
        <th>Дата</th>
+       <th>Оставить коммент</th>
+       <th>Комментарий</th>>
        <th>edit</th>
+
 
    </tr>
       {% if spoiled_list %}
@@ -34,9 +37,22 @@
         <td>{{spoiled.get_future_spoiled_display}}</td>
         <td>{{spoiled.get_sub_description_display}}</td>
         <td>{{ spoiled.updated_at|date:"d M Y"}}</td>
+        <td> <form action="" method="post">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <input type="hidden"  name="spoiled" type="text" value={{spoiled.pk}} >
+            <p>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </p>
+        </form>
+        </td>
+        <td>
+            {% for comment in spoiled.comments.all %}
+                {{comment}}
+            {% endfor %}
+        </td>
         <td>
             {% owner_check_edit spoiled.owner request.user spoiled.id%}
-
             {% if spoiled.owner == user %}
             {% endif %}
         </td>

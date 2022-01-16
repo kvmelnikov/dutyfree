@@ -1,7 +1,19 @@
-from spoiled.models import Spoiled, Nomenclature
+from spoiled.models import Spoiled, Nomenclature, Comment
 from django import forms
 from spoiled.humanize import  naturalsize
 from django.core.files.uploadedfile import InMemoryUploadedFile
+
+class CommentForm(forms.ModelForm):
+
+    class Meta:
+        model = Comment
+        fields = ["content"]
+
+    # def __init__(self, *args, **kwargs):
+    #     super(CommentForm, self).__init__(*args, **kwargs)
+    #     self.helper = FormHelper()
+    #     self.helper.add_input(Submit('submit', 'Добавить'))
+
 
 class SpoiledForm(forms.ModelForm):
 
@@ -17,7 +29,6 @@ class SpoiledForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(SpoiledForm, self).__init__(*args, **kwargs)
-
         # if you want to do it to all of them
         for field in self.fields.values():
             field.error_messages = {'required':'{fieldname} обязательный к заполнению'.format(
