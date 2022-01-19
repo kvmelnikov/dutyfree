@@ -9,6 +9,9 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.urls import reverse_lazy
 from django.http import HttpResponse, HttpResponseBadRequest
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class SpoiledListView(OwnerListView):
@@ -17,6 +20,7 @@ class SpoiledListView(OwnerListView):
 
     def get(self, request, pk_shop):
         spoileds = self.model.objects.filter(shop=pk_shop)
+        logger.debug("Got %d spoileds", len(spoileds))
         #spoileds = get_list_or_404(self.model, shop=pk_shop)
         comment_form = CommentForm()
         context = {}
@@ -39,6 +43,7 @@ class SpoiledListView(OwnerListView):
 class SpoiledDetailView(OwnerDetailView):
     model = Spoiled
     template_name = "spoiled/detail.html"
+
 
 class SpoiledCreateView(OwnerCreateView):
     template_name = "spoiled/spoiled_form.html"
