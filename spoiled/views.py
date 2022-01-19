@@ -16,7 +16,8 @@ class SpoiledListView(OwnerListView):
     template_name = 'spoiled/spoiled_list.html'
 
     def get(self, request, pk_shop):
-        spoileds = get_list_or_404(self.model, shop=pk_shop)
+        spoileds = self.model.objects.filter(shop=pk_shop)
+        #spoileds = get_list_or_404(self.model, shop=pk_shop)
         comment_form = CommentForm()
         context = {}
         context['comment_form'] = comment_form

@@ -9,6 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 class Comment(models.Model):
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     content = models.CharField(max_length=200)
+    discount_percent = models.IntegerField(null=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField(null=True)
     content_object = GenericForeignKey("content_type", "object_id")
@@ -81,7 +82,6 @@ class Spoiled(models.Model):
         (EMPLOYEES_WILL_BUY, 'Сотрудники')
     ]
 
-    discount_percent = models.IntegerField(null=True)
     description_comment = models.TextField(max_length=200, default="", null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)

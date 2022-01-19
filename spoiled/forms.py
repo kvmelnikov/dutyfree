@@ -1,18 +1,22 @@
 from spoiled.models import Spoiled, Nomenclature, Comment
 from django import forms
-from spoiled.humanize import  naturalsize
+from spoiled.humanize import naturalsize
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit
+from crispy_forms.helper import FormHelper
+
 
 class CommentForm(forms.ModelForm):
 
     class Meta:
         model = Comment
-        fields = ["content"]
+        fields = ["content", "discount_percent"]
 
-    # def __init__(self, *args, **kwargs):
-    #     super(CommentForm, self).__init__(*args, **kwargs)
-    #     self.helper = FormHelper()
-    #     self.helper.add_input(Submit('submit', 'Добавить'))
+    def __init__(self, *args, **kwargs):
+        super(CommentForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        #self.helper.form_class = 'form-horizontal'
+        #self.helper.add_input(Submit('submit', 'submit', css_class='btn-primary'))
 
 
 class SpoiledForm(forms.ModelForm):
@@ -25,11 +29,12 @@ class SpoiledForm(forms.ModelForm):
 
     class Meta:
         model = Spoiled
-        fields = ['nomenclature', 'description_comment', 'shop', 'quantity', 'sub_description', 'picture', 'future_spoiled', 'discount_percent']
+        fields = ['nomenclature', 'description_comment', 'shop', 'quantity', 'sub_description', 'picture', 'future_spoiled']
 
     def __init__(self, *args, **kwargs):
         super(SpoiledForm, self).__init__(*args, **kwargs)
         # if you want to do it to all of them
+
         for field in self.fields.values():
             field.error_messages = {'required':'{fieldname} обязательный к заполнению'.format(
                 fieldname=field.label)}
