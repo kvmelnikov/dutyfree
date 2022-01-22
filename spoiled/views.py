@@ -11,7 +11,8 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse, HttpResponseBadRequest
 import logging
 from django.core.cache import cache
-
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 logger = logging.getLogger(__name__)
 
 
@@ -19,10 +20,10 @@ class SpoiledListView(OwnerListView):
     model = Spoiled
     template_name = 'spoiled/spoiled_list.html'
 
+    @method_decorator(cache_page(10))
     def get(self, request, pk_shop):
         spoileds = self.model.objects.filter(shop=pk_shop)
         logger.debug("Got %d spoileds", len(spoileds))
-        #spoileds = get_list_or_404(self.model, shop=pk_shop)
         comment_form = CommentForm()
         context = {}
         context['comment_form'] = comment_form
