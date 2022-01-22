@@ -36,8 +36,8 @@ class Nomenclature(models.Model):
         help_text="Name shop",
         validators=[MinLengthValidator(2, "Shop must be greater than 1 character")]
     )
-    plu = models.CharField( max_length=20, help_text="plu")
-    barcode = models.CharField(max_length=20, help_text="plu")
+    plu = models.CharField( max_length=30, help_text="plu")
+    barcode = models.CharField(max_length=100, help_text="plu")
     inv_price = models.FloatField(default=0)
     sale_price = models.FloatField(default=0)
     characteristic = models.CharField(max_length=200, default="")

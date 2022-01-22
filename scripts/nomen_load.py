@@ -26,5 +26,5 @@ def run():
                                  inv_price=inv, sale_price=sale,
                                           plu=row[3], group=group, characteristic=row[1], unit=row[5])
             n.save()
-        except ValueError:
+        except:
             print("except", row)
