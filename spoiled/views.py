@@ -15,6 +15,10 @@ from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 logger = logging.getLogger(__name__)
 
+def get_ip(request):
+    from django.http import HttpResponse
+    return HttpResponse(request.META['REMOTE_ADDR'])
+
 
 class SpoiledListView(OwnerListView):
     model = Spoiled

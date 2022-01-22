@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
+import spoiled.views
+import debug_toolbar
+
 print(f"Time zone: {settings.TIME_ZONE}")
 
 urlpatterns = [
@@ -23,4 +26,11 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),  # Keep
     path('admin/', admin.site.urls),
     path('spoiled/', include('spoiled.urls')),
+    path("ip/", spoiled.views.get_ip),
+
 ]
+
+if settings.DEBUG:
+    urlpatterns += [
+        path("__debug__/", include(debug_toolbar.urls)),
+    ]

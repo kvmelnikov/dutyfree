@@ -48,6 +48,7 @@ class Dev(Configuration):
         'django_extensions',
         'django.contrib.humanize',
         'home.apps.HomeConfig',
+        "debug_toolbar",
         'spoiled.apps.SpoiledConfig',
         'crispy_forms',
         'crispy_bootstrap5',
@@ -55,6 +56,7 @@ class Dev(Configuration):
     ]
 
     MIDDLEWARE = [
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
         'django.middleware.security.SecurityMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.common.CommonMiddleware',
@@ -63,6 +65,7 @@ class Dev(Configuration):
         'django.contrib.messages.middleware.MessageMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
     ]
+    INTERNAL_IPS = ['127.0.0.1']
 
     ROOT_URLCONF = 'dutyfree.urls'
 
