@@ -27,7 +27,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('spoiled/', include('spoiled.urls')),
     path("ip/", spoiled.views.get_ip),
-
+    path("api/v1/", include("spoiled.api.urls")),
 ]
 
 if settings.DEBUG:

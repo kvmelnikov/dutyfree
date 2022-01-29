@@ -32,12 +32,13 @@ class Group(models.Model):
 
 class Nomenclature(models.Model):
     name = models.CharField(
+        db_index=True,
         max_length=200,
         help_text="Name shop",
         validators=[MinLengthValidator(2, "Shop must be greater than 1 character")]
-    )
+     )
     plu = models.CharField( max_length=30, help_text="plu")
-    barcode = models.CharField(max_length=100, help_text="plu")
+    barcode = models.CharField(max_length=100, help_text="plu", db_index=True)
     inv_price = models.FloatField(default=0)
     sale_price = models.FloatField(default=0)
     characteristic = models.CharField(max_length=200, default="")
@@ -93,7 +94,7 @@ class Spoiled(models.Model):
     future_spoiled = models.CharField( max_length=2, choices=FUTURE_SPOILED, default=NOT_SALE, verbose_name="Что делать с браком")
     sub_description = models.CharField(max_length=2, choices=SUB_DESCRIPTION, default=WAREHOUSE, verbose_name="Вид обстоятельств")
     employee = models.ForeignKey('Employee', on_delete=models.CASCADE, null=True, db_constraint=False)
-    nomenclature = models.ForeignKey('Nomenclature', on_delete=models.CASCADE, null=False, db_constraint=False)
+    nomenclature = models.ForeignKey('Nomenclature', db_index=True, on_delete=models.CASCADE, null=False, db_constraint=False)
     shop = models.ForeignKey('Shop', on_delete=models.CASCADE, null=False, db_constraint=True)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=0, db_constraint=False)
     comments = GenericRelation(Comment, default="", related_name="comments")

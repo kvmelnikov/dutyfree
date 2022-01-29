@@ -55,18 +55,16 @@ class SpoiledCreateView(OwnerCreateView):
     template_name = "spoiled/spoiled_form.html"
 
     def get(self, request, pk_shop):
-
-        # if cache.get(request.GET['barcode']):
-        #     nomen = cache.get(request.GET['barcode'])
-        #     data = {
-        #         'nomenclature': nomen[0].pk,
-        #         'shop': pk_shop
-        #     }
-        #     form = SpoiledForm(data)
-        #     ctx = {'form': form}
-        #     ctx['shop'] = pk_shop
-        #     return render(request, self.template_name, ctx)
-
+        if cache.get(request.GET['barcode']):
+            nomen = cache.get(request.GET['barcode'])
+            data = {
+                'nomenclature': nomen[0].pk,
+                'shop': pk_shop
+            }
+            form = SpoiledForm(data)
+            ctx = {'form': form}
+            ctx['shop'] = pk_shop
+            return render(request, self.template_name, ctx)
         try:
             barcode = request.GET['barcode']
             nomen = Nomenclature.objects.filter(Q(barcode=barcode) & Q(shop=pk_shop))
